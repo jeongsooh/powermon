@@ -4,6 +4,6 @@ from .models import Item
 # Register your models here.
 
 class ItemAdmin(admin.ModelAdmin):
-  list_display = ('version', 'sensor_id','token', 'timestamp', 'data', 'created',)
+  list_display = ('msg_name', 'sensor_id','transaction_id', 'timestamp', 'data', 'created',)
 
 admin.site.register(Item, ItemAdmin)

@@ -1,7 +1,7 @@
 import requests, json
 from datetime import datetime
 
-URL = 'http://127.0.0.1:8000/powermon/data/'
+URL = 'http://127.0.0.1:5000/powermon/data/'
 headers = {'Content-Type': 'application/json; charset=utf-8'}
 
 data = {
