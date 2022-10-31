@@ -255,3 +255,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 ```
+
+#### python manage.py runserver 했을 때 channels가 동작하지 않는 이유로 channels upgrade
+* django와 channels version mismatch로 에러 발생
+* channels 공식 문서 참조: https://channels.readthedocs.io/en/stable/ 

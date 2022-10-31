@@ -1,3 +1,5 @@
+# websockets client (Async)
+
 import asyncio
 import logging
 import json
@@ -7,31 +9,34 @@ from datetime import datetime
 
 print("Sample code for powermon client")
 
-async def heartbeat_send(ws):
+async def data_send(ws, interval):
     while True:
       await ws.send(json.dumps({
-        'version': '221017',
+        'msg_name': 'data',
         'sensor_id': 'gresystem000001',
-        'token': '123456789',
+        'transaction_id': '123456789',
         'timestamp': str(datetime.now()),
         'data': {
+          'probe_id': 1,
+          'probe_type': 'CT',
           'power': [20, 30, 20, 30, 40, 50, 30, 30, 20, 20],
           'pf': [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-          'voltage': str(220)
+          'voltage': 220
         }
       }))
       conf = await ws.recv()
       print('Message received:', conf)
-      await asyncio.sleep(10)
+      await asyncio.sleep(interval)
 
 async def main():
-
+    interval = 5
     async with websockets.connect(
-        'ws://127.0.0.1:8000/powermon/data/202021'
+        'ws://127.0.0.1:5000/powermon/data/gresystem000001'
     ) as ws:
 
         await asyncio.gather(
-          heartbeat_send(ws),
+          # interval = sensor_boot(ws),
+          data_send(ws, interval),
         )
 
 if __name__ == '__main__':
