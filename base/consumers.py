@@ -39,15 +39,15 @@ class PowermonConsumer(WebsocketConsumer):
     self.accept() 
 
   def receive(self, text_data):
-    text_data_json = json.loads(text_data)
+    data = json.loads(text_data)
     sensor_id = self.scope['path_remaining']
 
-    print('Power Message : Received from {} : {}'.format(sensor_id, text_data_json))
+    print('Power Data : Received from {} : {}'.format(sensor_id, data))
 
-    conf_data_json = power_data_processing(text_data_json)
+    conf = power_data_processing(data, sensor_id)
 
-    print('Power Message : Confirmed to {} : {}'.format(sensor_id, conf_data_json))
-    self.send(text_data=json.dumps(conf_data_json))
+    print('Power Data : Confirmed to {} : {}'.format(sensor_id, conf))
+    self.send(text_data=json.dumps(conf))
 
   def ocpp16_message(self, event):
     message = event['message']
