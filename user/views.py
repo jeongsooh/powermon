@@ -12,10 +12,15 @@ def index(request):
     form = LoginForm(request.POST)
     if form.is_valid():
       request.session['user'] = form.data.get('userid')
-      return redirect('/user/list')
+      return redirect('/energyinfo/dashboard')
   else:
     form = LoginForm()
   return render(request, 'index.html', {'form': form})
+
+# def dashboard(request):
+#   username  = request.session.get('user')
+
+#   return render(request, 'dashboard.html', {'loginuser': username})
 
 
 # class RegisterView(FormView):

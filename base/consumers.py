@@ -10,20 +10,25 @@ from clients.models import Clients
 from .models import Item
 from .dataprocessing import power_data_processing
 
-def channel_logging(sensor_id, channel_name):
+def channel_logging(sensor_id, channel_name, flag):
   queryset = Clients.objects.filter(sensor_id=sensor_id).values()
-
-  if queryset.count() == 0:
-    client = Clients(
-      sensor_id = sensor_id,
-      channel_name = channel_name,
-    )
-    client.save()
-    print('channel saved successfully')
+  if flag == 'REG':
+    if queryset.count() == 0:
+      client = Clients(
+        sensor_id = sensor_id,
+        channel_name = channel_name,
+      )
+      client.save()
+      print('channel is saved successfully')
+    else:
+      if not (queryset[0]['channel_name'] == channel_name):
+        Clients.objects.filter(sensor_id=sensor_id).update(channel_name=channel_name)
+        print('channel is updated successfully')
+  elif flag == 'DEL':
+    Clients.objects.filter(sensor_id=sensor_id).delete()
+    print('channel is removed successfully')
   else:
-    if not (queryset[0]['channel_name'] == channel_name):
-      Clients.objects.filter(sensor_id=sensor_id).update(channel_name=channel_name)
-      print('channel updated successfully')
+    pass
 
 class PowermonConsumer(WebsocketConsumer):
 
@@ -34,19 +39,25 @@ class PowermonConsumer(WebsocketConsumer):
       self.room_group_name,
       self.channel_name
     )
-    channel_logging(channel_name=self.channel_name, sensor_id=self.scope['path_remaining'])
-
+    channel_logging(channel_name=self.channel_name, sensor_id=self.scope['path_remaining'], flag='REG')
     self.accept() 
+
+  def disconnect(self, close_code):
+    channel_logging(channel_name=self.channel_name, sensor_id=self.scope['path_remaining'], flag='DEL')
 
   def receive(self, text_data):
     data = json.loads(text_data)
     sensor_id = self.scope['path_remaining']
 
-    print('Power Data : Received from {} : {}'.format(sensor_id, data))
+    # print('Power Data : Received from {} : {}'.format(sensor_id, data))
+    print('Power Data : Received from {}'.format(sensor_id))
 
-    conf = power_data_processing(data, sensor_id)
-
-    print('Power Data : Confirmed to {} : {}'.format(sensor_id, conf))
+    if data:
+      conf = power_data_processing(data, sensor_id)
+      print('Power Data : Confirmed to {} : {}'.format(sensor_id, conf))
+    else:
+      conf = [4,'',{}]
+      print('Power Data : NO DATA Error Confirmed to {} : {}'.format(sensor_id, conf))
     self.send(text_data=json.dumps(conf))
 
   def ocpp16_message(self, event):

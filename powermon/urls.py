@@ -7,5 +7,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index),
     path('user/', include('user.urls')),
+    path('sensor/', include('sensor.urls')),
+    path('energyinfo/', include('energyinfo.urls')),
     path('logout/', logout),
 ]

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-r6mz0u$f$a&333#1!)uxhuy92!4626vy9)fdr%=0*-093@fe06
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.215', '59.12.54.93']
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.215', '192.168.0.30','59.12.54.93']
 
 
 # Application definition
@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'django_celery_results',
+    'django_celery_beat',
+
     # 'rest_framework',
 ]
 INSTALLED_APPS += [
@@ -47,6 +50,7 @@ INSTALLED_APPS += [
     'user',
     'sensor',
     'clients',
+    'energyinfo',
 ]
 
 ASGI_APPLICATION = 'powermon.asgi.application'
@@ -86,7 +90,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'powermon.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -159,3 +162,25 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Celery settings
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+
+accept_content = ['application/json']
+result_serializer = 'json'
+task_serializer = 'json'
+timezone = 'Asia/Seoul'
+
+result_backend = 'django-db'
+
+# Celery beat
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# SMTP settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'jeongsooh63@gmail.com'
+EMAIL_HOST_PASSWORD = 'plenalmcbhxesxfd'
+DEFAULT_FROM_EMAIL = 'Celery <jeongsooh63@gmail.com>'

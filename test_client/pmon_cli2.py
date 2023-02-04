@@ -22,7 +22,8 @@ async def data_send(ws, count):
       'transactionId': 2265, 
       'meterValue': [
         {
-          'timestamp': '2022-11-03T15:14:20.506Z', 
+          # 'timestamp': str(datetime.datetime.now()), 
+          'timestamp': datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ'), 
           'sampledValue': [
             {
               'probe': 1,
@@ -57,7 +58,7 @@ async def data_send(ws, count):
 async def main():
 
   async with websockets.connect(
-      'ws://127.0.0.1:5000/powermon/data/gre000001'
+      'ws://127.0.0.1:5000/powermon/data/gre000002'
   ) as ws:
 
     loop = asyncio.get_running_loop()

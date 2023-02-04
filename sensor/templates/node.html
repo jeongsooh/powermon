@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block contents %}
+<div class="row mt-3 mx-3">
+  <div class="col-md-6 fw-bold"><h4>노드별현황</h4></div>
+  <div class="col-md-2">
+    <select class="form-select form-select-sm" aria-label="Default select example">
+      <option selected>센서아이디</option>
+      <option value="1">소유주/상호</option>
+      <option value="2">관리자아이디</option>
+      <option value="3">센서아이디</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <form method="get" action="/sensor/search">
+      <div class="input-group input-group-sm">
+        <input type="text" class="form-control" placeholder="" aria-label="Recipient's sensorid" aria-describedby="button-addon2">
+        <button class="btn btn-primary" type="button" id="button-addon2">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="row mt-3 mx-3">
+  <div class="col-md-6 fw-bold"><h5>노드별현황</h5></div>
+  <div class="col-md-3 d-grid justify-content-md-end">
+    <button class="btn btn-primary btn-sm" 
+      onclick="location.href='/sensor/register/'">센서추가
+    </button>
+  </div>
+  <div class="col-md-3">
+    <div class="row justify-content-end">
+      <label class="col form-select-sm text-end">정렬기준</label>
+      <select class="col form-select form-select-sm" aria-label="Default select example">
+        <option selected>센서아이디</option>
+        <option value="1">소유주/상호</option>
+        <option value="2">관리자아이디</option>
+        <option value="3">센서아이디</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="row mt-2 mx-2">
+  <div class="col-12">
+    <table class="table table-light">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">상호/소유주</th>
+          <th scope="col">센서아이디</th>
+          <th scope="col">관리자아이디</th>
+          <th scope="col">센서상태</th>
+          <th scope="col">센서구분</th>
+          <th scope="col">시/군/구</th>
+          <th scope="col">주소</th>
+          <th scope="col">등록일시</th>
+          <th scope="col">등록삭제</th>
+        </tr>
+      </thead>
+      <tbody class="text-dark">
+        {% for sensor in sensorList %}
+        <tr>
+          <th scope="row">{{ sensor.id }}</th>
+          <th><a href="/sensor/node/{{ sensor.id }}">{{ sensor.ownername }}</a></th>
+          <th>{{ sensor.sensorid }}</th>
+          <th>{{ sensor.ownerid }}</th>
+          <th>{{ sensor.status }}</th>
+          <th>{{ sensor.category }}</th>
+          <th>{{ sensor.address1 }}</th>
+          <th>{{ sensor.address2 }}</th>
+          <th>{{ sensor.register_dttm }}</th>
+          <th><a class="btn btn-primary btn-sm btn-danger" id="sensor-{{ sensor.id }}" href="/sensor/{{ sensor.id }}/delete" target="_blank">삭제</a></th>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="mt-5">
+      details for some sensors
+    </div>
+    <div class="pagination justify-content-center mt-5">
+      <ul class="step-links">
+        {% if page_obj.has_previous %}
+        <a class="btn btn-sm btn-outline-primary" href="?page=1">처음으로</a>
+        <a class="btn btn-sm btn-outline-primary" href="?page={{ page_obj.previous_page_number }}">이전으로</a>
+        {% else %}
+        <a class="btn btn-sm btn-outline-primary disabled" href="#">처음으로</a>
+        <a class="btn btn-sm btn-outline-primary disabled" href="#">이전으로</a>
+        {% endif %}
+      <span class="current">
+        {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+      </span>
+        {% if page_obj.has_next %}
+        <a class="btn btn-sm btn-outline-primary" href="?page={{ page_obj.next_page_number }}">다음으로</a>
+        <a class="btn btn-sm btn-outline-primary" href="?page={{ page_obj.paginator.num_pages }}">마지막으로</a>
+        {% else %}
+        <a class="btn btn-sm btn-outline-primary disabled" href="#">다음으로</a>
+        <a class="btn btn-sm btn-outline-primary disabled" href="#">마지막으로</a>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
