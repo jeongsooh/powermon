@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import random
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -47,3 +47,28 @@ def fetch_sensor_values_ajax(request):
   print(sensor_data)
 
   return JsonResponse(data) 
+
+def energyinfoCreate():
+    startday = datetime.combine(date.today(),datetime.min.time()) -timedelta(days=1)
+    endday = startday+timedelta(days=1)-timedelta(seconds=1)
+    if Evmain.objects.filter(systemday__range=(startday,endday)).count() ==0:
+        energy = Charginginfo.objects.filter(start_dttm__range=(startday,endday))
+        totalenergy=0  
+        totalamount=0
+        for a in range(energy.count()):
+            totalenergy += energy.values()[a]['energy']
+            totalamount += energy.values()[a]['amount']
+        today = date.today()-timedelta(days=1)
+        evmain = Evmain(
+            regiCount = Evuser.objects.filter(register_dttm__range=(startday,endday)).count(),
+            regiTotal = Evuser.objects.all().count(),
+            useCharger = Evcharger.objects.filter(cpstatus='사용중').count(),
+            totalCharger = Evcharger.objects.all().count(),
+            systemday = today,
+            totalenergy = totalenergy,
+            totalamount = totalamount
+        )
+        evmain.save() 
+    else :
+        Evmain.objects.filter(systemday=date.today()-timedelta(days=1)).update(useCharger = Evcharger.objects.filter(cpstatus='사용중').count())
+

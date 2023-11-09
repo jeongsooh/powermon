@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block contents %}
+<div class="row mt-3 mx-3">
+  <div class="col-md-6 fw-bold"><h4>Active 센서관리</h4></div>
+  <div class="col-md-2">
+    <select class="form-select form-select-sm" aria-label="Default select example">
+      <option selected>센서아이디</option>
+      <option value="1">소유주/상호</option>
+      <option value="2">관리자아이디</option>
+      <option value="3">센서아이디</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <form method="get" action="/clients/search">
+      <div class="input-group input-group-sm">
+        <input type="text" class="form-control" placeholder="" aria-label="Recipient's clientsid" aria-describedby="button-addon2">
+        <button class="btn btn-primary" type="button" id="button-addon2">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="row mt-3 mx-3">
+  <div class="col-md-6 fw-bold"><h5>센서정보</h5></div>
+  <div class="col-md-3 d-grid justify-content-md-end">
+    <button class="btn btn-primary btn-sm" 
+      onclick="location.href='/clients/register/'">센서추가
+    </button>
+  </div>
+  <div class="col-md-3">
+    <div class="row justify-content-end">
+      <label class="col form-select-sm text-end">정렬기준</label>
+      <select class="col form-select form-select-sm" aria-label="Default select example">
+        <option selected>센서아이디</option>
+        <option value="1">소유주/상호</option>
+        <option value="2">관리자아이디</option>
+        <option value="3">센서아이디</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="row mt-2 mx-2">
+  <div class="col-12">
+    <table class="table table-light">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">센서아이디</th>
+          <th scope="col">채널이름</th>
+          <th scope="col">채널상태</th>
+          <th scope="col">센서상태</th>
+          <th scope="col">트랜잭션아이디</th>
+          <th scope="col">원격시작</th>
+          <th scope="col">원격정지</th>
+          <th scope="col">리셋</th>
+        </tr>
+      </thead>
+      <tbody class="text-dark">
+        {% for clients in clientsList %}
+        <tr>
+          <th scope="row">{{ clients.id }}</th>
+          <th><a href="/clients/list/{{ clients.id }}">{{ clients.sensor_id }}</a></th>
+          <th>{{ clients.channel_name }}</th>
+          <th>{{ clients.channel_status }}</th>
+          <th>{{ clients.sensor_status }}</th>
+          <th>{{ clients.transaction_id }}</th>
+          <th><a class="btn btn-primary btn-sm btn-info" id="clients-{{ clients.id }}" 
+            href="/clients/list/{{ clients.id }}/remo_scs_cpf" target="_blank">원격가동</a></th>
+          <th><a class="btn btn-primary btn-sm btn-info" id="clients-{{ clients.id }}" 
+            href="/clients/list/{{ clients.id }}/remo_stop_cs" target="_blank">원격정지</a></th>
+          <th><a class="btn btn-primary btn-sm btn-danger" id="clients-{{ clients.id }}" 
+            href="/clients/list/{{ clients.id }}/reset" target="_blank">리셋</a></th>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="mt-5">
+    </div>
+    <div class="pagination justify-content-center mt-5">
+      <ul class="step-links">
+        {% if page_obj.has_previous %}
+        <a class="btn btn-sm btn-outline-primary" href="?page=1">처음으로</a>
+        <a class="btn btn-sm btn-outline-primary" href="?page={{ page_obj.previous_page_number }}">이전으로</a>
+        {% else %}
+        <a class="btn btn-sm btn-outline-primary disabled" href="#">처음으로</a>
+        <a class="btn btn-sm btn-outline-primary disabled" href="#">이전으로</a>
+        {% endif %}
+      <span class="current">
+        {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+      </span>
+        {% if page_obj.has_next %}
+        <a class="btn btn-sm btn-outline-primary" href="?page={{ page_obj.next_page_number }}">다음으로</a>
+        <a class="btn btn-sm btn-outline-primary" href="?page={{ page_obj.paginator.num_pages }}">마지막으로</a>
+        {% else %}
+        <a class="btn btn-sm btn-outline-primary disabled" href="#">다음으로</a>
+        <a class="btn btn-sm btn-outline-primary disabled" href="#">마지막으로</a>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

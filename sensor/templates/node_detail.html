@@ -6,24 +6,178 @@
 
 {% block contents %} 
 <div class="container mt-3 mx-3">
-  <h4>노드 상세정보</h4>
-  <div class="row mt-5">
-    <div class="col-12">
+  <h4>노드별 상세 현황</h4>
+  <div class="row mt-3">
+    <div class="col-sm-4">
       <div class="form-group mb-3">
-        <label for="ownername" class="">상호/소유주</label>
-        <textarea class="form-control" readonly>{{ sensor.ownername }}</textarea>
-        <label for="sensorid" class="">센서아이디</label>
-        <input type="text" class="form-control" id="sensorid" value="{{ sensor.sensorid }}" readonly/>
+        <label for="ownername" class=""><h5>상호/소유주</h5></label>
+        <textarea class="form-control" id="ownername" readonly>{{sensor.ownername}} </textarea>
+        <label for="sensorid" class="mt-2"><h5>운용중인 센서아이디</h5></label>
+        <input type="text" class="form-control" id="sensorid" value="{{ sensors }}" readonly/>
       </div>
       <div class="d-grid gap-2 d-md-block">
-        <a class="btn btn-primary" href="/sensor/update/{{ sensor.id }}" role="button">노드정보수정</a>
         <button class="btn btn-primary" onclick="javascript:history.go(-1);">돌아가기</button>
       </div>
     </div>
+    <div class="col-sm-8 p-3 text-primary-emphasis bg-light border border-primary-subtle rounded-3">
+      <h5>에너지관리 목표 및 현황</h5>
+      <div class="row mt-3">
+        <div class="col-sm-2">
+          <div class="card">
+            <div class="card-body">
+              <h7 class="card-title">현재 사용전력(kW)</h7>
+              <p class="card-text"><h5>{{ mgt_target.consumed_now }}</h5></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="card">
+            <div class="card-body">
+              <h7 class="card-title">당일 피크전력(kW)</h7>
+              <p class="card-text"><h5>{{ mgt_target.peakoftoday }}</h5></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="card">
+            <div class="card-body">
+              <h7 class="card-title">당월 피크전력(kW)</h7>
+              <p class="card-text"><h5>{{ mgt_target.peakofmonth }}</h5></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="card">
+            <div class="card-body">
+              <h7 class="card-title">피크관리 목표(kW)</h7>
+              <p class="card-text"><h5>{{ mgt_target.peaktarget }}</h5></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="card">
+            <div class="card-body">
+              <h7 class="card-title">요금적용 전력(kW)</h7>
+              <p class="card-text"><h5>{{ mgt_target.baselined }}</h5></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="card">
+            <div class="card-body">
+              <h7 class="card-title">기본 계약전력(kW)</h7>
+              <p class="card-text"><h5>{{ mgt_target.contracted }}</h5></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="p-3 text-primary-emphasis bg-light border border-primary-subtle rounded-3">
+      <h5>에너지소비현황</h5>
+        <table class="table table-bordered">
+          <thead class="table-info">
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">지난달현황</th>
+              <th scope="col">이번달현황</th>
+              <th scope="col">지난달대비추이(%)</th>
+              <th scope="col">어제현황</th>
+              <th scope="col">오늘현황</th>
+              <th scope="col">어제대비추이(%)</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr>
+              <th scope="row">월간전력량(kWh)</th>
+              <td>{{ energystat.lmonth_E }}</td>
+              <td>{{ energystat.cmonth_E }}</td>
+              <td>{{ energystat.mtrend_E }}</td>
+              <td>{{ energystat.lday_E }}</td>
+              <td>{{ energystat.cday_E }}</td>
+              <td>{{ energystat.dtrend_E }}</td>
+            </tr>
+            <tr>
+              <th scope="row"> - 최대부하사용량</th>
+              <td>{{ energystat.lmonth_H }}</td>
+              <td>{{ energystat.cmonth_H }}</td>
+              <td>{{ energystat.mtrend_H }}</td>
+              <td>{{ energystat.lday_H }}</td>
+              <td>{{ energystat.cday_H }}</td>
+              <td>{{ energystat.dtrend_H }}</td>
+            </tr>
+            <tr>
+              <th scope="row"> - 중간부하사용량</th>
+              <td>{{ energystat.lmonth_M }}</td>
+              <td>{{ energystat.cmonth_M }}</td>
+              <td>{{ energystat.mtrend_M }}</td>
+              <td>{{ energystat.lday_M }}</td>
+              <td>{{ energystat.cday_M }}</td>
+              <td>{{ energystat.dtrend_M }}</td>
+            </tr>
+            <tr>
+              <th scope="row"> - 경부하사용량</th>
+              <td>{{ energystat.lmonth_L }}</td>
+              <td>{{ energystat.cmonth_L }}</td>
+              <td>{{ energystat.mtrend_L }}</td>
+              <td>{{ energystat.lday_L }}</td>
+              <td>{{ energystat.cday_L }}</td>
+              <td>{{ energystat.dtrend_L }}</td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-sm-6 p-3 text-primary-emphasis bg-light border border-primary-subtle rounded-3">
+      <h5>에너지소비모델</h5>
+      주간 사용량 모델링을 통한 매 주 전력사용모델
+      <canvas id="myChart" style="width:100%; max-width:600px; height:200px;"></canvas>
+    </div>
+    <div class="col-sm-6 p-3 text-primary-emphasis bg-light border border-primary-subtle rounded-3">
+      <h5>이벤트 분석</h5>
+      일간 / 주간 / 월간 사용량 분석을 통한 특이점 레포팅
+
+    </div>
   </div>
 </div>
-{% endblock %} 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+  const owner = document.getElementById('ownername').innerHTML
+  const sensorid = document.getElementById('sensorid')
+  console.log(owner)
+  console.log(sensorid)
+  const ctx = document.getElementById('myChart');
 
-{% block script %}
-<script src="../../../static/script.js"></script>
-{% endblock %}
+  $.ajax({
+    url:  "{% url 'fetch_energy_values_ajax' %}",
+    dataType: 'json',
+    data: {ownername: owner},
+    success: function (data) {
+      console.log(data);
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.cm_act.gre000205.labels,
+          // labels: [],
+          datasets: [{
+            label: 'sum of 3 phase energy',
+            data:  data.cm_act.gre000205.energy_sum,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+  });
+</script>
+
+{% endblock %} 

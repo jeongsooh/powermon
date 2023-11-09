@@ -2,43 +2,22 @@
 
 {% block contents %}
 <div class="row mt-3 mx-3">
-  <div class="col-md-6 fw-bold"><h4>노드별현황</h4></div>
-  <div class="col-md-2">
-    <select class="form-select form-select-sm" aria-label="Default select example">
-      <option selected>센서아이디</option>
-      <option value="1">소유주/상호</option>
-      <option value="2">관리자아이디</option>
-      <option value="3">센서아이디</option>
-    </select>
-  </div>
-  <div class="col-md-2">
-    <form method="get" action="/sensor/search">
+  <div class="col-md-8 fw-bold"><h4>노드별현황</h4></div>
+  <div class="col-md-4">
+    <form method="get" action="/sensor/node">
       <div class="input-group input-group-sm">
-        <input type="text" class="form-control" placeholder="" aria-label="Recipient's sensorid" aria-describedby="button-addon2">
-        <button class="btn btn-primary" type="button" id="button-addon2">
+        <select class="form-select form-select-sm" name="category" id="category" aria-label="Default select example">
+          <option selected="selected" value="all">전체</option>
+          <option value="ownername">상호/소유주</option>
+          <option value="sensorid">센서아이디</option>
+          <option value="ownerid">관리자아이디</option>
+        </select>
+        <input type="text" class="form-control" name="q" placeholder="" aria-label="Recipient's sensorid" aria-describedby="button-addon2">
+        <button class="btn btn-primary" type="summit" id="button-addon2">
           <i class="bi bi-search"></i>
         </button>
       </div>
     </form>
-  </div>
-</div>
-<div class="row mt-3 mx-3">
-  <div class="col-md-6 fw-bold"><h5>노드별현황</h5></div>
-  <div class="col-md-3 d-grid justify-content-md-end">
-    <button class="btn btn-primary btn-sm" 
-      onclick="location.href='/sensor/register/'">센서추가
-    </button>
-  </div>
-  <div class="col-md-3">
-    <div class="row justify-content-end">
-      <label class="col form-select-sm text-end">정렬기준</label>
-      <select class="col form-select form-select-sm" aria-label="Default select example">
-        <option selected>센서아이디</option>
-        <option value="1">소유주/상호</option>
-        <option value="2">관리자아이디</option>
-        <option value="3">센서아이디</option>
-      </select>
-    </div>
   </div>
 </div>
 <div class="row mt-2 mx-2">
@@ -46,7 +25,7 @@
     <table class="table table-light">
       <thead class="thead-light">
         <tr>
-          <th scope="col">#</th>
+          <!-- <th scope="col">#</th> -->
           <th scope="col">상호/소유주</th>
           <th scope="col">센서아이디</th>
           <th scope="col">관리자아이디</th>
@@ -61,7 +40,7 @@
       <tbody class="text-dark">
         {% for sensor in sensorList %}
         <tr>
-          <th scope="row">{{ sensor.id }}</th>
+          <!-- <th scope="row">{{ sensor.id }}</th> -->
           <th><a href="/sensor/node/{{ sensor.id }}">{{ sensor.ownername }}</a></th>
           <th>{{ sensor.sensorid }}</th>
           <th>{{ sensor.ownerid }}</th>
@@ -76,7 +55,6 @@
       </tbody>
     </table>
     <div class="mt-5">
-      details for some sensors
     </div>
     <div class="pagination justify-content-center mt-5">
       <ul class="step-links">

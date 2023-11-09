@@ -58,8 +58,11 @@ async def data_send(ws, count):
 async def main():
 
   async with websockets.connect(
-      'ws://127.0.0.1:5000/powermon/data/gre000001'
+      'ws://106.10.32.171:5000/powermon/data/gre000001'
   ) as ws:
+  # async with websockets.connect(
+  #     'ws://127.0.0.1:5000/powermon/data/gre000001'
+  # ) as ws:
 
     loop = asyncio.get_running_loop()
     end_time = loop.time() + 10.0

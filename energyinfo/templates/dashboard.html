@@ -1,196 +1,160 @@
 {% extends "base.html" %}
 
 {% block contents %}
-{% load static %}
+<link rel="stylesheet" href="static/style.css" />
 <div class="row mt-2 mx-2">
   <div class="col-sm-2">
     <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">현재사용전력</h5>
-        <p class="card-text"><h3>89 kW</h3></p>
+      <div class="card-body text-primary-emphasis bg-light border border-primary-subtle rounded-3">
+        <h5 class="card-title">현재사용전력(kW)</h5>
+        <p class="card-text"><h3>{{ mgt_target.consumed_now }}</h3></p>
       </div>
     </div>
   </div>
   <div class="col-sm-2">
     <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">당일 피크전력</h5>
-        <p class="card-text"><h3>150 kW</h3></p>
+      <div class="card-body text-primary-emphasis bg-light border border-primary-subtle rounded-3">
+        <h5 class="card-title">당일 피크전력(kW)</h5>
+        <p class="card-text"><h3>{{ mgt_target.peakoftoday }}</h3></p>
       </div>
     </div>
   </div>
   <div class="col-sm-2">
     <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">당월 피크전력</h5>
-        <p class="card-text"><h3>200 kW</h3></p>
+      <div class="card-body text-primary-emphasis bg-light border border-primary-subtle rounded-3">
+        <h5 class="card-title">당월 피크전력(kW)</h5>
+        <p class="card-text"><h3>{{ mgt_target.peakofmonth }}</h3></p>
       </div>
     </div>
   </div>
   <div class="col-sm-2">
     <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">피크전력 관리목표</h5>
-        <p class="card-text"><h3>400 kW</h3></p>
+      <div class="card-body text-primary-emphasis bg-light border border-primary-subtle rounded-3">
+        <h5 class="card-title">피크 관리목표(kW)</h5>
+        <p class="card-text"><h3>{{ mgt_target.peaktarget }}</h3></p>
       </div>
     </div>
   </div>
   <div class="col-sm-2">
     <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">요금적용전력</h5>
-        <p class="card-text"><h3>600 kW</h3></p>
+      <div class="card-body text-primary-emphasis bg-light border border-primary-subtle rounded-3">
+        <h5 class="card-title">요금적용전력(kW)</h5>
+        <p class="card-text"><h3>{{ mgt_target.baselined }}</h3></p>
       </div>
     </div>
   </div>
   <div class="col-sm-2">
     <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">계약전력</h5>
-        <p class="card-text"><h3>800 kW</h3></p>
+      <div class="card-body text-primary-emphasis bg-light border border-primary-subtle rounded-3">
+        <h5 class="card-title">계약전력(kW)</h5>
+        <p class="card-text"><h3>{{ mgt_target.contracted }}</h3></p>
       </div>
     </div>
   </div>
 </div>
-<div class="row mt-5 mx-2">
+<div class="row mt-2 mx-2">
   <div class="col-sm-9">
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">실시간 사용추이</h5>
-        <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+        <div id="realTimeChart" style="height: 200px; width: 100%;"></div>
       </div>
     </div>
   </div>
   <div class="col-sm-3">
     <div class="card">
       <div class="card-body">
-        <h5 class="card-title">피크전력 관리목표 대비 사용현황</h5>
-        <div id="myChart2" style="width:100%; max-width:600px; height:500px;"></div>
+        <h5 class="card-title">피크 관리목표 대비 현황</h5>
+        <div id="myChart233" style="width:100%; max-width:600px; height:200px;"></div>
       </div>
     </div>
   </div>
 </div>
-<div class="row mt-5 mx-2">
+<div class="row mt-2 mx-2">
   <div class="col-sm-4">
     <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">이번 달 전력사용량</h5>
-        <p class="card-text"><h3>800 kW</h3></p>
+      <div class="card-body text-primary-emphasis bg-light border border-primary-subtle rounded-3">
+        <h5 class="card-title">이번 달 전력사용량(kWh)</h5>
+        <p class="card-text"><h3>{{ energysum.cmonth_E }}</h3></p>
       </div>
     </div>
   </div>
   <div class="col-sm-4">
     <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">이번 달 요금시간대 별 전력사용량</h5>
-        <p class="card-text"><h3>800 kW</h3></p>
+      <div class="card-body text-primary-emphasis bg-light border border-primary-subtle rounded-3">
+        <h5 class="card-title">이번 달 시간대 별 전력량(kWh)</h5>
+        <p class="card-text"><h5>최대부하  |  중부하  |   경부하</h5></p>
+        <p class="card-text"><h3>{{ energysum.cmonth_H }}  |  {{ energysum.cmonth_M }}  |  {{ energysum.cmonth_L }}</h3></p>
       </div>
     </div>
   </div>
   <div class="col-sm-4">
     <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">이번 달 사용요금</h5>
-        <p class="card-text"><h3>800 kW</h3></p>
+      <div class="card-body text-primary-emphasis bg-light border border-primary-subtle rounded-3">
+        <h5 class="card-title">이번 달 사용요금(원)</h5>
+        <p class="card-text"><h3>{{ energysum.total_amount }}</h3></p>
       </div>
     </div>
   </div>
 </div>
-<script src="{% static 'jquery-3.3.1.min.js' %}"></script>
-<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// $("#btn_show").click(function(){
-//     com=$("#comport").val();
-//     fill_graph_sensor(com);
-// });
-com="com3"
+  const ctx = document.getElementById('myChart');
 
-fill_graph_sensor(com);
-
-function fill_graph_sensor(){
-  var dps = []; // dataPoints
-  var chart = new CanvasJS.Chart("chartContainer", {
-    animationEnabled: true,
-    title: {
-      text: ""
-    },
-    axisX: {
-      title: "Time"
-    },
-    axisY: {
-      title: "Power",
-      suffix: ""
-    },
-    data: [{
-      type: "line",
-      name: "CPU Utilization",
-      connectNullData: true,
-      //nullDataLineDashType: "solid",
-      xValueType: "dateTime",
-      xValueFormatString: "DD MMM hh:mm TT",
-      yValueFormatString: "#,##0.##\"mm\"",
-      dataPoints: dps
-    }]
-  });
-
-var xVal = 0;
-var yVal = 100;
-var updateInterval = 1000;//miliseconds
-var dataLength = 20; // number of dataPoints visible at any point
-
-var updateChart = function () {
-  $.ajax({
-    type:"get",
-    url: "{% url 'fetch_sensor_values_ajax' %}",
+  new Chart(ctx, {
+    type: 'bar',
     data: {
-      'id': com
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        borderWidth: 1
+      }]
     },
-    success: function(data) {
-      console.log(data.result);
-      for(index = 0; index < data.result.length; index++) {
-        var str_array = data.result[index].split(',');
-        dps.push({
-          x: Date.parse(str_array[1]),
-          y: Number(str_array[0])
-        });
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
       }
-      return data;
-    },
-    error: function() {
-      console.log("error he ji");
     }
   });
-	if (dps.length > dataLength) {
-		dps.shift();
-	}
-	chart.render();
-};
-
-updateChart(dataLength);
-setInterval(function(){updateChart()}, updateInterval);
-}
 </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
-  google.charts.load('current', {'packages':['corechart']});
-  google.charts.setOnLoadCallback(drawChart);
-  
-  function drawChart() {
-  var data = google.visualization.arrayToDataTable([
-    ['Contry', 'Mhl'],
-    ['Italy',54.8],
-    ['France',48.6],
-    ['Spain',44.4],
-    ['USA',23.9],
-    ['Argentina',14.5]
-  ]);
-  
-  var options = {
-    // title:'World Wide Wine Production'
-  };
-  
-  var chart = new google.visualization.PieChart(document.getElementById('myChart2'));
-    chart.draw(data, options);
-  }
+  const owner = document.getElementById('ownername').innerHTML
+  const sensorid = document.getElementById('sensorid')
+  console.log(owner)
+  console.log(sensorid)
+  const ctx = document.getElementById('myChart');
+
+  $.ajax({
+    url:  "{% url 'fetch_energy_values_ajax' %}",
+    dataType: 'json',
+    data: {ownername: owner},
+    success: function (data) {
+      console.log(data);
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.cm_act.gre000205.labels,
+          // labels: [],
+          datasets: [{
+            label: 'sum of 3 phase energy',
+            data:  data.cm_act.gre000205.energy_sum,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+  });
 </script>
 {% endblock %}

@@ -43,6 +43,9 @@ def get_energy_info(sensor_id, start_time, end_time):
             |> filter(fn:(r) => r._field == "' + m_field + '")'
             # |> filter(fn:(r) => r._field == "voltage")'
             result = query_api.query(org=org, query=query)
+            print(org)
+            print(query)
+            print(result)
             # results = []
             for table in result:
                 field_value = 0
@@ -61,36 +64,38 @@ def get_energy_info(sensor_id, start_time, end_time):
 # deciding time range from where data is restored
 def time_range():
   timeobj = datetime.utcnow()
+  timestr = str(timeobj)[:10] + 'T' + str(timeobj)[11:13]
 
   if timeobj.minute < 15 and timeobj.minute >= 0:
       print("band 0 - 15")
       new_timeobj = timeobj - timedelta(hours=1)
+      new_timestr = str(new_timeobj)[:10] + 'T' + str(new_timeobj)[11:13]
       m_minute = 'q4'
       start_min = '45:01' 
       end_min = '00:00'
-      start_time = str(new_timeobj.date()) +'T'+ str(new_timeobj.hour) + ':' + start_min + 'Z'
-      end_time = str(timeobj.date()) +'T'+ str(timeobj.hour) + ':' + end_min + 'Z'
+      start_time = new_timestr + ':' + start_min + 'Z'
+      end_time = timestr + ':' + end_min + 'Z'
   elif timeobj.minute < 30 and timeobj.minute >= 15:
       print("band 15 - 30")
       m_minute = 'q1'
       start_min = '00:01' 
       end_min = '15:00'
-      start_time = str(timeobj.date()) +'T'+ str(timeobj.hour) + ':' + start_min + 'Z'
-      end_time = str(timeobj.date()) +'T'+ str(timeobj.hour) + ':' + end_min + 'Z'
+      start_time = timestr + ':' + start_min + 'Z'
+      end_time = timestr + ':' + end_min + 'Z'
   elif timeobj.minute < 45 and timeobj.minute >= 30:
       print("band 30 - 45")
       m_minute = 'q2'
       start_min = '15:01' 
       end_min = '30:00'
-      start_time = str(timeobj.date()) +'T'+ str(timeobj.hour) + ':' + start_min + 'Z'
-      end_time = str(timeobj.date()) +'T'+ str(timeobj.hour) + ':' + end_min + 'Z'
+      start_time = timestr + ':' + start_min + 'Z'
+      end_time = timestr + ':' + end_min + 'Z'
   else:
       print("band 45 - 0")
       m_minute = 'q3'
       start_min = '30:01' 
       end_min = '45:00'
-      start_time = str(timeobj.date()) +'T'+ str(timeobj.hour) + ':' + start_min + 'Z'
-      end_time = str(timeobj.date()) +'T'+ str(timeobj.hour) + ':' + end_min + 'Z'
+      start_time = timestr + ':' + start_min + 'Z'
+      end_time = timestr + ':' + end_min + 'Z'
 
   print(start_time, end_time, timeobj.hour, m_minute)
         

@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-r6mz0u$f$a&333#1!)uxhuy92!4626vy9)fdr%=0*-093@fe06'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.215', '192.168.0.30','59.12.54.93']
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.215', '59.12.54.93']
 
 
 # Application definition
@@ -51,6 +51,8 @@ INSTALLED_APPS += [
     'sensor',
     'clients',
     'energyinfo',
+    'variables',
+    'simulator',
 ]
 
 ASGI_APPLICATION = 'powermon.asgi.application'
@@ -153,7 +155,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 # STATIC_URL = 'static/'
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]

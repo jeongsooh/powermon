@@ -2,20 +2,18 @@
 
 {% block contents %}
 <div class="row mt-3 mx-3">
-  <div class="col-md-6 fw-bold"><h4>회원관리</h4></div>
-  <div class="col-md-2">
-    <select class="form-select form-select-sm" aria-label="Default select example">
-      <option selected>회원이름</option>
-      <option value="1">회원이름</option>
-      <option value="2">휴대폰번호</option>
-      <option value="3">회원번호</option>
-    </select>
-  </div>
-  <div class="col-md-2">
-    <form method="get" action="/user/search">
+  <div class="col-md-8 fw-bold"><h4>회원관리</h4></div>
+  <div class="col-md-4">
+    <form method="get" action="/user/list">
       <div class="input-group input-group-sm">
-        <input type="text" class="form-control" placeholder="" aria-label="Recipient's userid" aria-describedby="button-addon2">
-        <button class="btn btn-primary" type="button" id="button-addon2">
+        <select class="form-select form-select-sm" name="category" id="category" aria-label="Default select example">
+          <option selected value="all">전체</option>
+          <option value="name">회원명/상호</option>
+          <option value="phone">전화번호</option>
+          <option value="userid">회원아이디</option>
+        </select>
+        <input type="text" class="form-control" name="q" placeholder="" aria-label="Recipient's userid" aria-describedby="button-addon2">
+        <button class="btn btn-primary" type="submit" id="button-addon2">
           <i class="bi bi-search"></i>
         </button>
       </div>
@@ -23,22 +21,11 @@
   </div>
 </div>
 <div class="row mt-3 mx-3">
-  <div class="col-md-6 fw-bold"><h5>회원정보</h5></div>
-  <div class="col-md-3 d-grid justify-content-md-end">
+  <div class="col-md-8 fw-bold"><h5>회원정보</h5></div>
+  <div class="col-md-4 d-grid justify-content-md-end">
     <button class="btn btn-primary btn-sm" 
       onclick="location.href='/user/register/'">회원추가
     </button>
-  </div>
-  <div class="col-md-3">
-    <div class="row justify-content-end">
-      <label class="col form-select-sm text-end">정렬기준</label>
-      <select class="col form-select form-select-sm" aria-label="Default select example">
-        <option selected>회원이름</option>
-        <option value="1">회원이름</option>
-        <option value="2">휴대폰번호</option>
-        <option value="3">회원번호</option>
-      </select>
-    </div>
   </div>
 </div>
 <div class="row mt-2 mx-2">
@@ -47,8 +34,8 @@
       <thead class="thead-light">
         <tr>
           <th scope="col">#</th>
-          <th scope="col">사용자명</th>
-          <th scope="col">회원/고객명</th>
+          <th scope="col">관리자아이디</th>
+          <th scope="col">상호/소유주</th>
           <th scope="col">전화번호</th>
           <th scope="col">주소</th>
           <th scope="col">회원상태</th>

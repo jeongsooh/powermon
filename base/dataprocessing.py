@@ -3,9 +3,13 @@ from datetime import datetime, timedelta
 from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS, PointSettings
 
+import time
 import json
+import random
 import pandas as pd 
 from queue import Queue
+
+from clients.models import Clients
 
 sensor_data_queue = Queue()
 
@@ -17,8 +21,7 @@ bucket = "powermon"
 energy_data = {'sensor_id': '', 'date': '', 'time_band': '', 'probe_id': 0, 'energy': 0, 'pf': 0, 'voltage': 0}
 
 def ingest_to_energydb(data):
-  # data_time, sensor_id, probe_id, power, pf, voltage
-  # print(data[0], data[1], data[2], data[3])
+
   sensor_data_queue.put(data)
 
 def ingest_to_database(r_data):
@@ -32,22 +35,18 @@ def ingest_to_database(r_data):
       'data': r_data['m_data'][num]['sampledValue']
     }
 
-    # average value for the packet
-    # data_time = datetime.strptime(meterValue['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ')
-    # avg_meterValue = [str(data_time), meterValue['sensor_id'], meterValue['data']['probe']]
-    #   sum(meterValue['data']['power'])/len(meterValue['data']['power']), 
-    #   sum(meterValue['data']['powerfactor'])/len(meterValue['data']['powerfactor']), 
-    #   sum(meterValue['data']['voltage'])/len(meterValue['data']['voltage'])]
-    # print(avg_meterValue)
-
     for data in meterValue['data']:
       if len(data['power']) > len(data['powerfactor']):
-        data_len = len(data['power']) 
+        data_len = len(data['power'])
       else:
         data_len = len(data['powerfactor'])
-        
+
+      duration = 1000 / data_len
+
+      meter_time = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.localtime(int(meterValue['timestamp'])))
+
       for count in range(data_len):
-        data_time = datetime.strptime(meterValue['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ') + timedelta(milliseconds=50) * count
+        data_time = datetime.strptime(meter_time, '%Y-%m-%dT%H:%M:%SZ') + timedelta(milliseconds=duration) * count
         # line_data = [str(data_time), meterValue['sensor_id'],data['probe'],data['power'][count],data['powerfactor'][count],data['voltage'][count]]
         # print(line_data)
         # ingest_to_energydb(line_data)   # ingest to energy databases for billing and payment
@@ -82,13 +81,16 @@ def power_data_processing(msg, sensor_id):
       """
       ingest_to_database(data)
 
-    conf = [3,msg[1],{'status':'Accepted'}]
+    conf = [3,msg[1],{'status':'MVAccepted'}]
 
   elif msg[2] == 'StartTransaction':
-    conf = [3,msg[1],{'status':'Accepted','transactionId':2265}]
+    transaction_id = random.randint(1000001, 9999999)
+    Clients.objects.filter(sensor_id=sensor_id).update(transaction_id=transaction_id)
+    conf = [3,msg[1],{'status':'Accepted','transactionId':transaction_id}]
 
   elif msg[2] == 'StopTransaction':
-    conf = [3,msg[1],{'status':'Accepted','transactionId':2265}]
+    transaction_id = msg[3]['transactionId']
+    conf = [3,msg[1],{'status':'Accepted','transactionId':transaction_id}]
 
   elif msg[2] == 'StatusNotification':
     conf = [3,msg[1],{}]

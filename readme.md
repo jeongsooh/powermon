@@ -285,6 +285,9 @@ STATICFILES_DIRS = [
     }
   });
 ```
+chart update 데모 참조 : https://www.youtube.com/watch?v=UcSA6Px-m-E&t=1151s
+django와 chart 정리 잘된 곳 : https://dowtech.tistory.com/3 
+
 
 # Celery 활용 Task 관리
 참조: https://www.youtube.com/watch?v=AZNp1CfOjtE
@@ -322,3 +325,23 @@ app.conf.beat_schedule = {
 
 # InflusDB Python API reference
 https://influxdb-python.readthedocs.io/en/latest/examples.html
+
+
+# Powermon 실행을 위한 실행 명령
+
+1. django 실행
+```
+$ python manage.py runserver 0.0.0.0:5000
+```
+2. Windows cmd 창에서 influxd 실행
+```
+$ /c/Program Files/InfluxData/influxdb/influxdb2_windows_amd64/influxd
+```
+3. celery 실행
+```
+$ celery -A powermon worker -l info -P gevent
+```
+4. task 실행
+```
+$ celery -A powermon beat -l info
+```

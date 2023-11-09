@@ -10,7 +10,8 @@ org = "gresystem"
 bucket = "powermon"
 
 # Store the URL of your InfluxDB instance
-url="http://localhost:8086"
+# url="http://localhost:8086"
+url="http://106.10.32.171:8086"
 
 client = influxdb_client.InfluxDBClient(
     url=url,
@@ -21,36 +22,39 @@ client = influxdb_client.InfluxDBClient(
 # deciding time range from where data is restored
 def time_range():
   timeobj = datetime.utcnow()
+  # timeobj = datetime.strptime("2023-02-06T0:00:00Z", '%Y-%m-%dT%H:%M:%SZ')
+  timestr = str(timeobj)[:10] + 'T' + str(timeobj)[11:13]
 
   if timeobj.minute < 15 and timeobj.minute >= 0:
       print("band 0 - 15")
       new_timeobj = timeobj - timedelta(hours=1)
+      new_timestr = str(new_timeobj)[:10] + 'T' + str(new_timeobj)[11:13]
       m_minute = 'q4'
       start_min = '45:01' 
       end_min = '00:00'
-      start_time = str(new_timeobj.date()) +'T'+ str(new_timeobj.hour) + ':' + start_min + 'Z'
-      end_time = str(timeobj.date()) +'T'+ str(timeobj.hour) + ':' + end_min + 'Z'
+      start_time = new_timestr + ':' + start_min + 'Z'
+      end_time = timestr + ':' + end_min + 'Z'
   elif timeobj.minute < 30 and timeobj.minute >= 15:
       print("band 15 - 30")
       m_minute = 'q1'
       start_min = '00:01' 
       end_min = '15:00'
-      start_time = str(timeobj.date()) +'T'+ str(timeobj.hour) + ':' + start_min + 'Z'
-      end_time = str(timeobj.date()) +'T'+ str(timeobj.hour) + ':' + end_min + 'Z'
+      start_time = timestr + ':' + start_min + 'Z'
+      end_time = timestr + ':' + end_min + 'Z'
   elif timeobj.minute < 45 and timeobj.minute >= 30:
       print("band 30 - 45")
       m_minute = 'q2'
       start_min = '15:01' 
       end_min = '30:00'
-      start_time = str(timeobj.date()) +'T'+ str(timeobj.hour) + ':' + start_min + 'Z'
-      end_time = str(timeobj.date()) +'T'+ str(timeobj.hour) + ':' + end_min + 'Z'
+      start_time = timestr + ':' + start_min + 'Z'
+      end_time = timestr + ':' + end_min + 'Z'
   else:
       print("band 45 - 0")
       m_minute = 'q3'
       start_min = '30:01' 
       end_min = '45:00'
-      start_time = str(timeobj.date()) +'T'+ str(timeobj.hour) + ':' + start_min + 'Z'
-      end_time = str(timeobj.date()) +'T'+ str(timeobj.hour) + ':' + end_min + 'Z'
+      start_time = timestr + ':' + start_min + 'Z'
+      end_time = timestr + ':' + end_min + 'Z'
 
   print(start_time, end_time, m_minute)
         
@@ -64,8 +68,9 @@ def time_range():
 #   "stop": s_timeobj + timedelta(minutes=15)
 # }
 
-# start_time = 2023-02-03T17:15:01Z
-# stop_time = 2023-02-03T17:30:00Z
+# start_time = "2023-02-07T02:15:01Z"
+# end_time = "2023-02-07T02:30:00Z"
+# m_minute = "q2"
 
 start_time, end_time, m_minute = time_range()
 
@@ -79,9 +84,10 @@ for phase_id in m_phase:
     query = 'from(bucket:"powermon")\
     |> range(start:' + str(start_time) + ', stop:' + str(end_time) + ')\
     |> filter(fn:(r) => r._measurement == "power_data")\
-    |> filter(fn:(r) => r.sensor_id == "GRE000202")\
+    |> filter(fn:(r) => r.sensor_id == "GRE000200")\
     |> filter(fn:(r) => r.phase_id == "' + str(phase_id) + '")\
     |> filter(fn:(r) => r._field == "' + m_field + '")'
+    # print(query)
     result = query_api.query(org=org, query=query)
     for table in result:
       field_value = 0
@@ -96,4 +102,4 @@ for phase_id in m_phase:
       field_value = 0
 
 print(results)
-print('Energy Info for last 15m: Power {:.2f}Wh, Voltage {:.2f}V and pF {:.2f}'.format(results[0][1], results[1][1], results[2][1]))
+# print('Energy Info for last 15m: Power {:.2f}Wh, Voltage {:.2f}V and pF {:.2f}'.format(results[0][1], results[1][1], results[2][1]))

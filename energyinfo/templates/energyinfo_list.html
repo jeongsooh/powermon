@@ -75,24 +75,40 @@
       <thead class="thead-light">
         <tr>
           <th scope="col">#</th>
-          <th scope="col">에너지기</th>
-          <th scope="col">회원번호</th>
-          <th scope="col">에너지량</th>
-          <th scope="col">에너지금액</th>
-          <th scope="col">에너지시작일시</th>
-          <th scope="col">에너지완료일시</th>
+          <th scope="col">센서아이디</th>
+          <th scope="col">날짜</th>
+          <th scope="col">시간</th>
+          <th scope="col">시간 내 대역</th>
+          <th scope="col">A전력량</th>
+          <th scope="col">A전압</th>
+          <th scope="col">A_pf</th>
+          <th scope="col">B전력량</th>
+          <th scope="col">B전압</th>
+          <th scope="col">B_pf</th>
+          <th scope="col">C전력량</th>
+          <th scope="col">C전압</th>
+          <th scope="col">C_pf</th>
+          <th scope="col">등록일시</th>
         </tr>
       </thead>
       <tbody class="text-dark">
         {% for energyinfo in energyinfoList %}
         <tr>
           <th scope="row">{{ energyinfo.id }}</th>
-          <th><a href="/energyinfo/{{ energyinfo.id }}">{{ energyinfo.cpnumber }}</a></th>
-          <th>{{ energyinfo.userid }}</th>
-          <th>{{ energyinfo.energy }}</th>
-          <th>{{ energyinfo.amount }}</th>
-          <th>{{ energyinfo.start_dttm }}</th>
-          <th>{{ energyinfo.end_dttm }}</th>
+          <th><a href="/energyinfo/{{ energyinfo.id }}">{{ energyinfo.sensorid }}</a></th>
+          <th>{{ energyinfo.m_date }}</th>
+          <th>{{ energyinfo.m_hour }}</th>
+          <th>{{ energyinfo.m_minute }}</th>
+          <th>{{ energyinfo.energy_a }}</th>
+          <th>{{ energyinfo.voltage_a }}</th>
+          <th>{{ energyinfo.pf_a }}</th>
+          <th>{{ energyinfo.energy_b }}</th>
+          <th>{{ energyinfo.voltage_b }}</th>
+          <th>{{ energyinfo.pf_b }}</th>
+          <th>{{ energyinfo.energy_c }}</th>
+          <th>{{ energyinfo.voltage_c }}</th>
+          <th>{{ energyinfo.pf_c }}</th>
+          <th>{{ energyinfo.register_dttm }}</th>
         </tr>
         {% endfor %}
       </tbody>

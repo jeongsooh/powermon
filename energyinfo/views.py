@@ -6,7 +6,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework import generics
 from rest_framework import mixins
+
 from .models import Energyinfo
+# from .dashboard import energymgt_target
+from sensor.energystat import energymgt_target, energystatsum
 # from .serializers import EnergyinfoSerializer
 
 from .tasks import send_mail_func
@@ -20,7 +23,8 @@ class EnergyinfoList(ListView):
   model = Energyinfo
   template_name='energyinfo_list.html'
   context_object_name = 'energyinfoList'
-  paginate_by = 2
+  paginate_by = 10
+  ordering = ['-register_dttm']
   queryset = Energyinfo.objects.all()
 
   def get_context_data(self, **kwargs):
@@ -62,9 +66,13 @@ class EnergyinfoUpdateView(UpdateView):
   success_url = '/energyinfo'
 
 def dashboard(request):
-  username  = request.session.get('user')
+  userid  = request.session.get('user')
+  mgt_target = energymgt_target(userid)
+  print("energymgt_target done")
+  energysum, sensors = energystatsum(userid)
+  print("energystatsum done")
 
-  return render(request, 'dashboard.html', {'loginuser': username})
+  return render(request, 'dashboard.html', {'loginuser': userid, 'mgt_target': mgt_target, 'energysum': energysum})
 
 def schedule_mail(request):
     # schedule, created = CrontabSchedule.objects.get_or_create(hour=13, minute=15, timezone=zoneinfo.ZoneInfo('Asia/Seoul'))

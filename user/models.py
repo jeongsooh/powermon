@@ -4,9 +4,9 @@ from django.db import models
 
 class User(models.Model):
 
-  userid = models.CharField(max_length=64, verbose_name='회원아이디')
+  userid = models.CharField(max_length=64, verbose_name='관리자아이디')
   password = models.CharField(max_length=128, verbose_name='비밀번호')
-  name = models.CharField(max_length=64, verbose_name='회원명/상호')
+  name = models.CharField(max_length=64, verbose_name='상호/소유주')
   email = models.EmailField(max_length=128, verbose_name='이메일')
   phone = models.CharField(max_length=64, verbose_name='전화번호')
   category = models.CharField(max_length=64, verbose_name='회원구분')

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block contents %}
+<div class="row mt-3 mx-3">
+  <div class="col-md-6 fw-bold"><h4>Active 메세지로그관리</h4></div>
+  <div class="col-md-2">
+    <select class="form-select form-select-sm" aria-label="Default select example">
+      <option selected>센서아이디</option>
+      <option value="1">소유주/상호</option>
+      <option value="2">관리자아이디</option>
+      <option value="3">센서아이디</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <form method="get" action="/item/search">
+      <div class="input-group input-group-sm">
+        <input type="text" class="form-control" placeholder="" aria-label="Recipient's itemid" aria-describedby="button-addon2">
+        <button class="btn btn-primary" type="button" id="button-addon2">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="row mt-2 mx-2">
+  <div class="col-12">
+    <table class="table table-light">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">센서아이디</th>
+          <th scope="col">메시지디렉션</th>
+          <th scope="col">메세지이름</th>
+          <th scope="col">트랜젝션아이디</th>
+          <th scope="col">데이터</th>
+        </tr>
+      </thead>
+      <tbody class="text-dark">
+        {% for item in itemList %}
+        <tr>
+          <th scope="row">{{ item.id }}</th>
+          <th><a href="/item/list/{{ item.id }}">{{ item.sensor_id }}</a></th>
+          <th>{{ item.msg_direction }}</th>
+          <th>{{ item.msg_name }}</th>
+          <th>{{ item.transaction_id }}</th>
+          <th>{{ item.data }}</th>
+          <th><a class="btn btn-primary btn-sm btn-danger" id="item-{{ item.id }}" href="/item/{{ item.id }}/delete" target="_blank">삭제</a></th>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="pagination justify-content-center mt-5">
+      <ul class="step-links">
+        {% if page_obj.has_previous %}
+        <a class="btn btn-sm btn-outline-primary" href="?page=1">처음으로</a>
+        <a class="btn btn-sm btn-outline-primary" href="?page={{ page_obj.previous_page_number }}">이전으로</a>
+        {% else %}
+        <a class="btn btn-sm btn-outline-primary disabled" href="#">처음으로</a>
+        <a class="btn btn-sm btn-outline-primary disabled" href="#">이전으로</a>
+        {% endif %}
+      <span class="current">
+        {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+      </span>
+        {% if page_obj.has_next %}
+        <a class="btn btn-sm btn-outline-primary" href="?page={{ page_obj.next_page_number }}">다음으로</a>
+        <a class="btn btn-sm btn-outline-primary" href="?page={{ page_obj.paginator.num_pages }}">마지막으로</a>
+        {% else %}
+        <a class="btn btn-sm btn-outline-primary disabled" href="#">다음으로</a>
+        <a class="btn btn-sm btn-outline-primary disabled" href="#">마지막으로</a>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

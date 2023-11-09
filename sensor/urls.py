@@ -10,5 +10,5 @@ urlpatterns = [
     path('node/', views.SensorNode.as_view()),
     path('node/<int:pk>/', views.NodeDetail.as_view()),
     path('register/', views.SensorCreateView.as_view()),
-    # path('powermon/data/', views.addItem)
+    path('fetch_energy_values_ajax', views.fetch_energy_values_ajax, name='fetch_energy_values_ajax'),
 ]

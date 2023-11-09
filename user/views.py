@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView, CreateView, DeleteView, UpdateView
 from django.contrib.auth.hashers import make_password
+from django.db.models import Q
+
 from user.models import User
 from .forms import RegisterForm, LoginForm
 
@@ -21,7 +23,6 @@ def index(request):
 #   username  = request.session.get('user')
 
 #   return render(request, 'dashboard.html', {'loginuser': username})
-
 
 # class RegisterView(FormView):
 #   template_name = 'register.html'
@@ -69,8 +70,36 @@ class UserList(ListView):
   def get_context_data(self, **kwargs):
     context = super(UserList, self).get_context_data(**kwargs)
     user_id = self.request.session['user']
+    query = self.request.GET.get("q", None)
+    page = self.request.GET.get('page')
+    category = self.request.GET.get('category')
     context['loginuser'] = user_id
+    context['q'] = query
+    context['category'] = category
+    context['page']=page
     return context
+
+  def get_queryset(self) :
+    queryset = User.objects.all()
+    query = self.request.GET.get("q", None)
+    category = self.request.GET.get('category')
+    if query:
+      if category=='all':
+        queryset = queryset.filter(
+          Q(userid__icontains=query) |
+          Q(name__icontains=query) |
+          Q(phone__icontains=query)
+        )
+      elif category=='userid':
+        queryset = queryset.filter(           
+          Q(userid__icontains=query))
+      elif category=='name':
+        queryset = queryset.filter(           
+          Q(name__icontains=query))
+      elif category=='phone':
+        queryset = queryset.filter(           
+          Q(phone__icontains=query))
+    return queryset
 
 class UserDetail(DetailView):
   template_name='user_detail.html'
